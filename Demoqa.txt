@@ -1,0 +1,76 @@
+package com.demoqa;
+
+import io.github.bonigarcia.wdm.WebDriverManager;
+import org.openqa.selenium.By;
+import org.openqa.selenium.JavascriptExecutor;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.chrome.ChromeDriver;
+import org.testng.annotations.AfterTest;
+import org.testng.annotations.BeforeTest;
+import org.testng.annotations.Test;
+
+import java.util.Iterator;
+import java.util.List;
+import java.util.NoSuchElementException;
+
+public class DemoPage {
+    WebDriver driver;
+@BeforeTest
+ public void launchBrowser(){
+    WebDriverManager.chromedriver().setup();
+    driver = new ChromeDriver();
+    driver.manage().window().maximize();
+    driver.get("https://demoqa.com/");
+}
+@Test(priority = 1)
+    public void getAllLinks(){
+    List<WebElement> links   = driver.findElements(By.tagName("a"));
+    for(WebElement link:links){
+       System.out.println(link.getText());
+       System.out.println(link.getAttribute("href"));
+    }
+}
+@Test(priority = 2)
+    public void confirmDialogBox() throws InterruptedException {
+    driver.navigate().to("https://demoqa.com/alerts");
+  driver.findElement(By.cssSelector("#alertButton")).click();
+    Thread.sleep(2000);
+    driver.switchTo().alert().accept();
+    driver.navigate().back();
+}
+@Test
+    public void getLinkCount(){
+    List<WebElement> links = driver.findElements(By.xpath("//a"));
+    int linkCount = links.size();
+    System.out.println("Total Number of link count on webpage = "  + linkCount);
+}
+@Test(priority = 3)
+    public void isChecked() {
+    driver.navigate().to("https://demoqa.com/checkbox");
+    WebElement checkbox = driver.findElement(By.xpath("//label[@for='tree-node-home']//span[@class='rct-checkbox']//*[name()='svg']"));
+    if (!checkbox.isSelected()) {
+        checkbox.click();
+        System.out.println("checkbox is selected");
+    }else{
+        System.out.println("checkbox is selected");
+    }
+    driver.navigate().back();
+}
+@Test(priority = 4)
+    public void getListItems(){
+    driver.navigate().to("https://demoqa.com/elements");
+    List<WebElement> listitems= driver.findElements(By.xpath("//li"));
+    System.out.println(listitems.size());
+    for (WebElement webElement : listitems) {
+        String name = webElement.getText();
+        System.out.println(name);
+    }
+}
+@AfterTest
+    public void closeBrowser(){
+    driver.quit();
+}
+
+}
+
